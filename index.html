@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Selección de propiedades en venta · Barcelona</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin>
+<style>
+:root{--black:#17181a;--black-2:#1e2023;--black-3:#292b2f;--line:rgba(200,200,208,.14);--white:#f3f5fa;--muted:#9a9ca3;--red:#e2231a;--red-dim:#8a170f;--glow:rgba(226,35,26,.34);--wa:#1fa855;--ease:cubic-bezier(.22,.68,0,1)}
+*{margin:0;padding:0;box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--black);color:var(--white);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+h1,h2,h3{font-family:'Montserrat',sans-serif;font-weight:700;line-height:1.1;letter-spacing:-.01em}
+:focus-visible{outline:2px solid var(--red);outline-offset:3px}
+button{font-family:inherit}
+.wrap{max-width:1240px;margin:0 auto;padding:0 20px}
+
+/* header */
+header{background:#000;border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 0}
+.habiclic-logo{font-family:'Fredoka',sans-serif;font-weight:600;color:#E2231A;white-space:nowrap;line-height:1;display:inline-flex;align-items:baseline}
+.habiclic-logo .big{font-size:32px;letter-spacing:-.5px}
+.habiclic-logo .small{font-size:18px;letter-spacing:.8px}
+.habiclic-logo .big.c{margin-left:1px}
+.top-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:999px;font-weight:700;font-size:13.5px;border:1px solid rgba(255,255,255,.25);background:transparent;color:var(--white);cursor:pointer;transition:transform .25s var(--ease),background .25s var(--ease),border-color .25s,box-shadow .25s,color .25s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.45)}
+.btn svg{width:16px;height:16px;flex:none}
+.btn.red{background:var(--red);border-color:var(--red)}
+.btn.red:hover{background:#ef4444;border-color:#ef4444}
+.btn.wa{background:var(--wa);border-color:var(--wa)}
+.btn.gold{background:linear-gradient(160deg,#1c1a15,#0a0906);border:1.5px solid #c9a227;color:#fff;box-shadow:0 8px 22px -10px rgba(201,162,39,.4)}
+.btn.gold:hover{background:linear-gradient(160deg,#f4c469,#c9922a);border-color:#f4c469;color:#1a1409;box-shadow:0 12px 28px -10px rgba(201,162,39,.7)}
+.btn.sm{padding:9px 14px;font-size:12.5px}
+
+/* agent bar */
+.agent{background:var(--black-2);border-bottom:1px solid var(--line)}
+.agent .wrap{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
+.agent .tag{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-right:auto}
+.agent .tag b{color:var(--red)}
+.agent input{background:var(--black);color:var(--white);border:1px solid var(--line);border-radius:999px;padding:10px 16px;font:600 13.5px Inter,sans-serif;min-width:240px}
+.agent input::placeholder{color:var(--muted)}
+.client .agent-only{display:none!important}
+body:not(.client) .client-only{display:none!important}
+
+/* hero */
+.hero{padding:34px 0 18px}
+.eyebrow{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;padding-bottom:9px;border-bottom:3px solid var(--red);margin-bottom:16px}
+.hero h1{font-size:clamp(28px,4.2vw,46px);max-width:780px}
+.hero p{color:var(--muted);margin-top:12px;max-width:620px;line-height:1.6}
+.count{display:inline-block;margin-left:10px;font-size:13px;font-weight:700;color:var(--red);background:rgba(226,35,26,.12);border:1px solid var(--red-dim);border-radius:999px;padding:3px 12px;vertical-align:middle;font-family:'Inter',sans-serif;letter-spacing:0}
+.para{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:8px 14px;border-radius:999px;background:var(--black-2);border:1px solid var(--line);font-size:13px;color:var(--muted)}
+.para b{color:var(--white)}
+
+/* map */
+.mapwrap{position:relative;margin-top:16px}
+#map{height:min(70vh,640px);min-height:520px;border-radius:16px;border:1px solid var(--line);background:var(--black-2)}
+.leaflet-tile-pane{filter:brightness(.85) contrast(1.05) saturate(.75)}
+.leaflet-container{background:#17181a;font-family:'Inter',sans-serif}
+.leaflet-control-zoom a{background:var(--black-2)!important;color:var(--white)!important;border-color:var(--line)!important}
+.pin{width:34px;height:42px;position:relative;filter:drop-shadow(0 6px 8px rgba(0,0,0,.5));transition:transform .2s var(--ease)}
+.pin:hover,.pin.on{transform:scale(1.18)}
+.pin svg{width:34px;height:42px;display:block}
+.pin .lb{position:absolute;left:50%;bottom:46px;transform:translateX(-50%);background:var(--black-2);border:1px solid var(--line);color:var(--white);font:800 11.5px/1 'Inter',sans-serif;padding:6px 9px;border-radius:999px;white-space:nowrap;box-shadow:0 6px 14px rgba(0,0,0,.5)}
+.pin.on .lb{background:var(--red);border-color:var(--red)}
+.mapnote{margin:10px 2px 0;font-size:12.5px;color:var(--muted)}
+
+/* detail panel */
+.detail{display:none;position:absolute;z-index:1100;left:12px;top:12px;bottom:12px;width:344px;background:var(--black-2);border:1px solid var(--line);border-radius:16px;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.65)}
+.detail.open{display:block;animation:dIn .3s var(--ease)}
+@keyframes dIn{from{opacity:0;transform:translateX(-22px)}to{opacity:1;transform:none}}
+.d-close{position:absolute;right:12px;top:12px;z-index:3;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(0,0,0,.55);color:#fff;font-size:15px;cursor:pointer}
+
+/* shared ficha bits */
+.ph{position:relative;background:var(--black-3) center/cover no-repeat}
+.ph::after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,rgba(20,20,20,.85),transparent 55%);pointer-events:none}
+.ph .play{position:absolute;inset:0;margin:auto;z-index:2;width:58px;height:58px;border-radius:50%;background:var(--red);border:2px solid rgba(255,255,255,.92);display:grid;place-items:center;cursor:pointer;box-shadow:0 10px 26px -6px var(--glow),0 4px 12px rgba(0,0,0,.5);transition:transform .2s var(--ease)}
+.ph .play:hover{transform:scale(1.08)}
+.ph .play svg{width:22px;height:22px;margin-left:3px}
+.ribbon{position:absolute;top:12px;left:12px;z-index:2;background:#5c161b;color:#ffd9c0;border:1px solid rgba(255,217,192,.35);font:700 11px/1 'Inter',sans-serif;letter-spacing:.14em;padding:7px 11px;border-radius:999px;text-transform:uppercase}
+.bd{padding:16px 18px 20px;display:flex;flex-direction:column;gap:10px}
+.zona{font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--red)}
+.bd h3{font-size:21px;line-height:1.15}
+.addr{font-size:13px;color:var(--muted);margin-top:-4px}
+.pr{font-weight:800;font-size:26px;font-family:'Inter',sans-serif}
+.pr small{display:block;font-weight:500;color:var(--muted);font-size:12.5px;margin-top:3px}
+.sp{display:flex;flex-wrap:wrap;gap:6px;font-size:13px;color:#cfccc7}
+.sp span{background:var(--black-3);border-radius:999px;padding:5px 11px}
+.acts{display:grid;gap:8px;margin-top:4px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.row2 .btn{padding:11px 10px;font-size:12.5px;min-width:0}
+
+/* visit */
+.visit{margin-top:6px;padding:12px 14px;background:var(--black-3);border:1px solid var(--line);border-radius:12px}
+.visit .vt{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:7px}
+.visit .vt svg{width:15px;height:15px;color:var(--red)}
+.visit .vd{font-family:'Montserrat',sans-serif;font-size:15.5px;font-weight:700;margin-top:6px}
+.visit .vb{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.visit .ve{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.visit input{background:var(--black);color:var(--white);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font:600 13.5px Inter,sans-serif;color-scheme:dark}
+.visit .empty{font-size:13px;color:var(--muted);margin-top:6px}
+
+/* list */
+.sec{padding:44px 0 10px}
+.sec h2{font-size:clamp(22px,3vw,30px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-top:20px}
+.card{min-width:0;background:var(--black-2);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:border-color .25s var(--ease),transform .25s var(--ease)}
+.card:hover{border-color:rgba(226,35,26,.55);transform:translateY(-2px)}
+.card .ph{height:200px}
+.card .bd{flex:1}
+.card .visit{margin-top:auto}
+
+/* contact */
+.cta{margin:48px 0 0;background:var(--black-2);border:1px solid var(--line);border-radius:16px;padding:28px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.cta h2{font-size:clamp(20px,2.6vw,28px)}
+.cta p{color:var(--muted);margin-top:8px;max-width:520px;line-height:1.6;font-size:14px}
+.cta .b{display:flex;gap:10px;flex-wrap:wrap}
+footer{background:#000;margin-top:56px;padding:30px 0 34px}
+.footer-brand{display:flex;flex-direction:column;align-items:flex-start;gap:8px;margin-bottom:14px}
+.footer-brand .habiclic-logo .big{font-size:34px}.footer-brand .habiclic-logo .small{font-size:19px}
+.footer-brand .rule{width:56px;height:2px;background:#E2231A;opacity:.55}
+.footer-brand .signature{font-family:'Fredoka',sans-serif;font-weight:500;font-size:11px;letter-spacing:3px}
+footer .ln{display:flex;gap:22px;flex-wrap:wrap;font-size:13px;margin-top:8px}
+footer small{display:block;color:var(--muted);font-size:12px;margin-top:14px;line-height:1.5}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;background:rgba(6,8,12,.9);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:5000;padding:20px}
+.modal.on{display:flex}
+.modal .box{height:min(86vh,820px);aspect-ratio:9/16;max-width:100%;border-radius:18px;overflow:hidden;background:#000;border:1px solid var(--line);box-shadow:0 30px 70px rgba(0,0,0,.6)}
+.modal video{width:100%;height:100%;object-fit:contain;display:block}
+.modal .x{position:absolute;top:18px;right:18px;width:44px;height:44px;border-radius:50%;border:2px solid rgba(255,255,255,.9);background:var(--red);color:#fff;font-size:20px;font-weight:700;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--black-3);border:1px solid var(--line);color:#fff;font-size:13.5px;font-weight:600;padding:12px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:.25s var(--ease);z-index:6000}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media(max-width:640px){
+  .habiclic-logo .big{font-size:26px}.habiclic-logo .small{font-size:15px}
+  .top-actions .btn{padding:10px 14px}
+  .agent input{min-width:0;flex:1}
+  #map{min-height:420px;height:56vh}
+  .detail{position:static;width:auto;margin-top:12px;max-height:none}
+  .d-close{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap top">
+    <span class="habiclic-logo" aria-label="HabiClic"><span class="big">H</span><span class="small">ABI</span><span class="big c">C</span><span class="small">LIC</span></span>
+    <div class="top-actions">
+      <button class="btn agent-only" id="copyTop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>Copiar enlace</button>
+      <a class="btn wa" href="https://wa.me/34672907381" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </div>
+</header>
+
+<div class="agent agent-only">
+  <div class="wrap">
+    <span class="tag"><b>●</b> Modo agente · solo tú ves esta barra</span>
+    <input id="cliente" type="text" placeholder="Nombre del cliente (opcional)" autocomplete="off">
+    <button class="btn red sm" id="copy">Copiar enlace para el cliente</button>
+    <a class="btn sm" id="preview" href="#" target="_blank">Ver como cliente</a>
+  </div>
+</div>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="eyebrow">Venta · Barcelona</span>
+    <h1>Propiedades seleccionadas para ti <span class="count" id="count">4</span></h1>
+    <p>Mira dónde está cada propiedad, su precio y su vídeo. Cuando una te encaje, pide la visita desde su ficha: te contesto yo directamente.</p>
+    <div class="para" id="para" hidden>Preparado para <b id="paraName"></b></div>
+  </section>
+
+  <div class="mapwrap">
+    <div id="map" role="region" aria-label="Mapa de propiedades"></div>
+    <aside class="detail" id="detail" aria-live="polite"></aside>
+  </div>
+  <p class="mapnote">Ubicaciones aproximadas. Pulsa un pin para ver la ficha.</p>
+
+  <section class="sec">
+    <span class="eyebrow">Todas las propiedades</span>
+    <h2>Fichas, vídeos y documentación</h2>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="cta">
+    <div>
+      <h2>¿Quieres ver alguna en persona?</h2>
+      <p>Escríbeme y organizamos la visita. Te acompaño y resuelvo cualquier duda sobre la propiedad, la zona o la operación.</p>
+    </div>
+    <div class="b">
+      <a class="btn wa" href="https://wa.me/34672907381" target="_blank" rel="noopener">Escribir por WhatsApp</a>
+      <a class="btn gold" href="tel:+34672907381">Llamar</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-brand"><span class="habiclic-logo"><span class="big">H</span><span class="small">ABI</span><span class="big c">C</span><span class="small">LIC</span></span><span class="rule"></span><span class="signature">FERNANDO BENÍTEZ</span></div>
+    <div class="ln"><a href="tel:+34672907381">+34 672 907 381</a><a href="mailto:fdbenitezr@gmail.com">fdbenitezr@gmail.com</a></div>
+    <small>Información orientativa y sujeta a verificación. Precios sin impuestos de transmisión.</small>
+  </div>
+</footer>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Vídeo de la propiedad">
+  <div class="box"><video id="mv" controls playsinline></video></div>
+  <button class="x" id="mx" aria-label="Cerrar">✕</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin></script>
+<script>
+var PROPS = [
+  {id:"amigo", nuevo:true, zona:"Sant Gervasi – Galvany", titulo:"Piso de 90 m²", dir:"Carrer d'Amigó, 62",
+   lat:41.3978, lng:2.1438, precio:"525.000 €", nota:"+ 3% honorarios", corto:"525k",
+   chips:["90 m²","Vivienda","Vídeo"], foto:"img/amigo-poster.jpg", pos:"50% 55%", video:"video/amigo-62.mp4",
+   loc:"Carrer d'Amigó, 62, 08021 Barcelona"},
+  {id:"regas", nuevo:true, zona:"Sant Gervasi", titulo:"Piso de 93 m²", dir:"Carrer de Regàs, 11",
+   lat:41.3996, lng:2.1503, precio:"615.000 €", nota:"Honorarios incluidos", corto:"615k",
+   chips:["93 m²","Vivienda","Plano","Vídeo"], foto:"img/regas-poster.jpg", pos:"50% 70%", video:"video/regas-11.mp4",
+   doc:{href:"pdf/Plano_Regas_11.pdf", label:"Plano PDF"}, loc:"Carrer de Regàs, 11, 08006 Barcelona"},
+  {id:"muntaner", nuevo:true, zona:"Eixample", titulo:"Piso de 86 m²", dir:"Carrer de Muntaner, 58",
+   lat:41.3866, lng:2.1592, precio:"550.000 €", nota:"Honorarios incluidos", corto:"550k",
+   chips:["86 m²","Vivienda","Balcón","Vídeo"], foto:"img/muntaner-poster.jpg", pos:"50% 35%", video:"video/muntaner-58.mp4",
+   loc:"Carrer de Muntaner, 58, Barcelona"},
+  {id:"corsega", zona:"Eixample", titulo:"Suelo residencial de 142 m²", dir:"Carrer de Còrsega, 608",
+   lat:41.4063, lng:2.1772, precio:"975.000 €", nota:"+ 3% honorarios + IVA", corto:"975k",
+   chips:["Parcela 142 m²","Potencial ≈730 m²","PB + 4","13E"], foto:"img/corsega.jpg", pos:"55% 50%",
+   doc:{href:"pdf/Dossier_Corsega_608.pdf", label:"Descargar dossier"}, loc:"Carrer de Còrsega, 608, Barcelona"}
+];
+
+var IC = {
+  dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>',
+  play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>',
+  playW:'<svg viewBox="0 0 24 24"><path d="M6 4l14 8-14 8z" fill="#fff"/></svg>',
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  map:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>'
+};
+
+/* ---------- estado: modo agente / cliente y visitas ---------- */
+var qs = new URLSearchParams(location.search);
+var isClient = qs.get("cliente") === "1";
+if (isClient) document.body.classList.add("client");
+var visits = {}, clientName = qs.get("para") || "";
+if (qs.get("v")) {
+  qs.get("v").split(",").forEach(function(p){ var a = p.split("~"); if (a[0] && a[1]) visits[a[0]] = a[1]; });
+} else if (!isClient) {
+  try { visits = JSON.parse(localStorage.getItem("hc_visitas") || "{}"); clientName = clientName || localStorage.getItem("hc_cliente") || ""; } catch(e){}
+}
+function params(client){
+  var p = new URLSearchParams();
+  if (client) p.set("cliente","1");
+  if (clientName) p.set("para", clientName);
+  var v = Object.keys(visits).filter(function(k){return visits[k];}).map(function(k){return k+"~"+visits[k];}).join(",");
+  if (v) p.set("v", v);
+  return p.toString();
+}
+function clientLink(){ return location.origin + location.pathname + "?" + params(true); }
+function save(){
+  try { localStorage.setItem("hc_visitas", JSON.stringify(visits)); localStorage.setItem("hc_cliente", clientName); } catch(e){}
+  if (!isClient) { var p = params(false); history.replaceState(null,"",location.pathname+(p?"?"+p:"")); document.getElementById("preview").href = clientLink(); }
+}
+
+var DIAS=["domingo","lunes","martes","miércoles","jueves","viernes","sábado"], MESES=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+function fmt(d){ var x=d.split("T"), f=x[0].split("-").map(Number), wd=new Date(f[0],f[1]-1,f[2]).getDay(); var s=DIAS[wd]; return s.charAt(0).toUpperCase()+s.slice(1)+" "+f[2]+" de "+MESES[f[1]-1]+(x[1]?" · "+x[1]+" h":""); }
+function waLink(p){ return "https://wa.me/34672907381?text="+encodeURIComponent("Hola Fernando, me gustaría visitar: "+p.titulo+" ("+p.dir+")"); }
+
+/* ---------- plantillas ---------- */
+function visitHTML(p, scope){
+  var v = visits[p.id];
+  if (v) return '<div class="visit"><div class="vt">'+IC.cal+'Visita programada</div><div class="vd">'+fmt(v)+'</div>'+
+    '<div class="vb"><button class="btn sm client-only" data-ics="'+p.id+'">'+IC.cal+'Añadir a mi calendario</button>'+
+    '<button class="btn sm agent-only" data-edit="'+p.id+'" data-scope="'+scope+'">Cambiar</button><button class="btn sm agent-only" data-del="'+p.id+'">Quitar</button></div></div>';
+  return '<div class="visit"><div class="vt">'+IC.cal+'Visita</div>'+
+    '<div class="agent-only"><div class="vb"><button class="btn red sm" data-edit="'+p.id+'" data-scope="'+scope+'">Asignar fecha de visita</button></div></div>'+
+    '<div class="client-only empty">A convenir · <a href="'+waLink(p)+'" target="_blank" rel="noopener" style="color:#fff;text-decoration:underline">pedir visita</a></div></div>';
+}
+function fichaHTML(p, scope){
+  var acts = [];
+  if (p.video) acts.push('<button class="btn gold" data-video="'+p.id+'">'+IC.play+'Ver vídeo</button>');
+  if (p.doc) acts.push('<a class="btn gold" href="'+p.doc.href+'" download>'+IC.dl+p.doc.label+'</a>');
+  var actsHTML = acts.length===2 ? '<div class="row2">'+acts.join("")+'</div>' : acts.join("");
+  if (scope==="grid") actsHTML += '<button class="btn sm" data-focus="'+p.id+'">'+IC.map+'Ver en el mapa</button>';
+  return '<div class="bd"><div class="zona">'+p.zona+'</div><h3>'+p.titulo+'</h3><div class="addr">'+p.dir+'</div>'+
+    '<div class="pr">'+p.precio+' <small>'+p.nota+'</small></div>'+
+    '<div class="sp">'+p.chips.map(function(c){return '<span>'+c+'</span>';}).join("")+'</div>'+
+    '<div class="acts">'+actsHTML+'</div><div data-vbox="'+p.id+'" data-scope="'+scope+'">'+visitHTML(p,scope)+'</div></div>';
+}
+function photoHTML(p, h){
+  return '<div class="ph" style="height:'+h+'px;background-image:url('+p.foto+');background-position:'+p.pos+'">'+
+    (p.nuevo?'<span class="ribbon">Nuevo</span>':'')+
+    (p.video?'<button class="play" data-video="'+p.id+'" aria-label="Ver vídeo">'+IC.playW+'</button>':'')+'</div>';
+}
+
+/* ---------- lista ---------- */
+var grid = document.getElementById("grid");
+function renderGrid(){
+  grid.innerHTML = PROPS.map(function(p){ return '<article class="card" id="c-'+p.id+'">'+photoHTML(p,200)+fichaHTML(p,"grid")+'</article>'; }).join("");
+}
+
+/* ---------- mapa ---------- */
+var map=null, markers={}, current=null;
+var detail = document.getElementById("detail");
+function pinHTML(p){ return '<div class="pin" data-pin="'+p.id+'"><span class="lb">'+p.corto+'</span><svg viewBox="0 0 34 42"><path d="M17 1C8.7 1 2 7.6 2 15.8 2 26.6 17 41 17 41s15-14.4 15-25.2C32 7.6 25.3 1 17 1z" fill="#17181a" stroke="#e2231a" stroke-width="2"/><circle cx="17" cy="16" r="6" fill="#e2231a"/></svg></div>'; }
+function initMap(){
+  if (!window.L){ document.getElementById("map").innerHTML='<div style="padding:24px;color:#9a9ca3">No se ha podido cargar el mapa. Las fichas están más abajo.</div>'; return; }
+  map = L.map('map',{scrollWheelZoom:false,zoomControl:false}).setView([41.397,2.158],14);
+  L.control.zoom({position:'topright'}).addTo(map);
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(map);
+  var b=[];
+  PROPS.forEach(function(p){
+    var m = L.marker([p.lat,p.lng],{icon:L.divIcon({html:pinHTML(p),className:'',iconSize:[34,42],iconAnchor:[17,40]}),title:p.titulo,alt:p.titulo}).addTo(map);
+    m.on('click',function(){ openDetail(p.id); });
+    markers[p.id]=m; b.push([p.lat,p.lng]);
+  });
+  map.fitBounds(b,{padding:[70,70]});
+  map.on('click',closeDetail);
+}
+function openDetail(id){
+  var p = PROPS.find(function(x){return x.id===id;}); current=id;
+  detail.innerHTML = '<button class="d-close" id="dclose" aria-label="Cerrar">✕</button>'+photoHTML(p,190)+fichaHTML(p,"detail");
+  detail.classList.add("open");
+  document.querySelectorAll('.pin').forEach(function(el){ el.classList.toggle('on', el.dataset.pin===id); });
+  if (map) map.panTo([p.lat,p.lng],{animate:true});
+}
+function closeDetail(){ detail.classList.remove("open"); current=null; document.querySelectorAll('.pin').forEach(function(el){el.classList.remove('on');}); }
+
+function refreshVisit(id){
+  var p = PROPS.find(function(x){return x.id===id;});
+  document.querySelectorAll('[data-vbox="'+id+'"]').forEach(function(box){ box.innerHTML = visitHTML(p, box.dataset.scope); });
+}
+function editVisit(id, scope){
+  var box = document.querySelector('[data-vbox="'+id+'"][data-scope="'+scope+'"]'); if(!box) return;
+  var cur = visits[id] || "", d = cur ? cur.split("T")[0] : "", t = cur ? cur.split("T")[1] : "10:00";
+  var min = new Date().toISOString().slice(0,10);
+  box.innerHTML = '<div class="visit"><div class="vt">'+IC.cal+'Asignar visita</div><div class="ve">'+
+    '<input type="date" data-d value="'+d+'" min="'+min+'" aria-label="Fecha"><input type="time" data-t value="'+t+'" step="900" aria-label="Hora"></div>'+
+    '<div class="vb"><button class="btn red sm" data-save="'+id+'">Guardar</button><button class="btn sm" data-cancel="'+id+'">Cancelar</button></div></div>';
+  var inp = box.querySelector('[data-d]'); inp.focus(); if (inp.showPicker) { try{inp.showPicker();}catch(e){} }
+}
+
+/* ---------- calendario (.ics) ---------- */
+function ics(id){
+  var p = PROPS.find(function(x){return x.id===id;}), v = visits[id]; if(!v) return;
+  var x=v.split("T"), date=x[0], time=x[1]||"10:00", hm=time.split(":").map(Number);
+  var st=date.replace(/-/g,"")+"T"+time.replace(":","")+"00";
+  var en=date.replace(/-/g,"")+"T"+String(hm[0]+1).padStart(2,"0")+String(hm[1]).padStart(2,"0")+"00";
+  var body=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//HabiClic//Visitas//ES","BEGIN:VEVENT","UID:"+id+"-"+st+"@habiclic",
+    "DTSTAMP:"+new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z","DTSTART;TZID=Europe/Madrid:"+st,"DTEND;TZID=Europe/Madrid:"+en,
+    "SUMMARY:Visita · "+p.titulo,"LOCATION:"+p.loc.replace(/,/g,"\\,"),"DESCRIPTION:Visita con Fernando Benítez · +34 672 907 381","END:VEVENT","END:VCALENDAR"].join("\r\n");
+  var url=URL.createObjectURL(new Blob([body],{type:"text/calendar"})), a=document.createElement("a");
+  a.href=url; a.download="visita-"+id+".ics"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},2000);
+}
+
+/* ---------- eventos ---------- */
+document.addEventListener("click", function(e){
+  var b = e.target.closest("button"); if(!b) return;
+  var d = b.dataset;
+  if (d.video) openVideo(d.video);
+  else if (d.edit) editVisit(d.edit, d.scope);
+  else if (d.cancel) refreshVisit(d.cancel);
+  else if (d.del) { delete visits[d.del]; save(); refreshVisit(d.del); toast("Visita eliminada"); }
+  else if (d.save) {
+    var box=b.closest("[data-vbox]"), dv=box.querySelector("[data-d]").value, tv=box.querySelector("[data-t]").value;
+    if(!dv){ toast("Elige una fecha"); return; }
+    visits[d.save]=dv+"T"+(tv||"10:00"); save(); refreshVisit(d.save); toast("Visita guardada · copia el enlace para el cliente");
+  }
+  else if (d.ics) ics(d.ics);
+  else if (d.focus) { document.getElementById("map").scrollIntoView({behavior:"smooth",block:"center"}); openDetail(d.focus); }
+  else if (b.id==="dclose") closeDetail();
+});
+
+var cl=document.getElementById("cliente"); cl.value=clientName;
+cl.addEventListener("input",function(){ clientName=cl.value.trim(); save(); showPara(); });
+function showPara(){ document.getElementById("para").hidden=!clientName; document.getElementById("paraName").textContent=clientName; }
+function copyLink(){
+  var link=clientLink();
+  if (navigator.clipboard) navigator.clipboard.writeText(link).then(function(){toast("Enlace copiado · pégalo en WhatsApp o email");},function(){prompt("Copia este enlace:",link);});
+  else prompt("Copia este enlace:",link);
+}
+document.getElementById("copy").addEventListener("click",copyLink);
+document.getElementById("copyTop").addEventListener("click",copyLink);
+
+var modal=document.getElementById("modal"), mv=document.getElementById("mv");
+function openVideo(id){ var p=PROPS.find(function(x){return x.id===id;}); mv.src=p.video; mv.poster=p.foto; modal.classList.add("on"); var pr=mv.play(); if(pr&&pr.catch) pr.catch(function(){}); }
+function closeVideo(){ mv.pause(); mv.removeAttribute("src"); mv.load(); modal.classList.remove("on"); }
+document.getElementById("mx").addEventListener("click",closeVideo);
+modal.addEventListener("click",function(e){ if(e.target===modal) closeVideo(); });
+document.addEventListener("keydown",function(e){ if(e.key==="Escape"){ if(modal.classList.contains("on")) closeVideo(); else closeDetail(); } });
+
+var tt; function toast(m){ var t=document.getElementById("toast"); t.textContent=m; t.classList.add("on"); clearTimeout(tt); tt=setTimeout(function(){t.classList.remove("on");},2600); }
+
+document.getElementById("count").textContent = PROPS.length;
+renderGrid(); initMap(); showPara(); save();
+</script>
+</body>
+</html>
